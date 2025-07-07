@@ -7,8 +7,7 @@ multi-view X-ray images from a single view.
 
 The name SV-DRR, short for Single-View DRR, is inspired by Digitally Reconstructed Radiography (DRR).
 
-Unlike DRR, which renders X-ray projections from a 3D CT volume, our method syn-
-thesizes novel views directly from a single 2D projection.
+Unlike DRR, which renders X-ray projections from a 3D CT volume, our method synthesizes novel views directly from a single 2D projection.
 
 
 ##  Usage

@@ -55,7 +55,7 @@ If you find this work useful, a citation will be appreciated via:
       year={2025},
       eprint={2507.05148},
       archivePrefix={arXiv},
-      url={https://arxiv.org/abs/2507.05148}, 
+      doi={https://doi.org/10.48550/arXiv.2507.05148}, 
 } 
 ```
 

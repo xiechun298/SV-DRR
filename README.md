@@ -31,12 +31,18 @@ Unlike DRR, which renders X-ray projections from a 3D CT volume, our method synt
 ![SV_DRR](SV_DRR.svg)
 <!-- <img src="SV_DRR.svg" alt="SV_DRR.svg" width="800"/> -->
 
+##  Dataset
+The preprocessed DRRs will be available at [here](https://drive.google.com/drive/folders/17hl5JEplo1yznmM2GtdJzYGwwT0MiWqc?usp=drive_link) once the uploading is done
+
 ##  Usage
+🚧 Code in Preparation 🚧
 
-Work in progress
+Thank you for your interest in this research! I am currently in the process of cleaning, documenting, and refactoring the code used in my paper.
 
-##  Training
-Work in progress
+My goal is to make it public and reproducible for the community. Please be aware that the code in its current state is a work-in-progress and is not yet ready for use.
+
+Please Star or Watch this repository to be notified of its official release. Thank you for your patience!
+
 
 ##  Acknowledgement
 This repository is based on the codebases below:

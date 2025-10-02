@@ -493,25 +493,27 @@ class LidcidriHardFBData(Dataset):
     #     return np.array([theta, azimuth, z])
 
     def get_T(self, target_theta_phi, cond_theta_phi) -> torch.Tensor:
-        # TODO: traget和cond写反了，结果d_T实质上是cond-target
-        # 这里的target应该是cond，cond应该是target
         (
             theta_cond,
             azimuth_cond,
         ) = (
-            target_theta_phi[0],
-            target_theta_phi[1],
+            cond_theta_phi[0],
+            cond_theta_phi[1],
         )
         (
             theta_target,
             azimuth_target,
         ) = (
-            cond_theta_phi[0],
-            cond_theta_phi[1],
+            target_theta_phi[0],
+            target_theta_phi[1],
         )
 
-        d_theta = theta_target - theta_cond
-        d_azimuth = (azimuth_target - azimuth_cond) % (2 * math.pi)
+        # d_theta = theta_target - theta_cond
+        # d_azimuth = (azimuth_target - azimuth_cond) % (2 * math.pi)
+
+        # use cond - traget, because we flipped cond and target in training (by mistake)
+        d_theta = theta_cond - theta_target
+        d_azimuth = (azimuth_cond - azimuth_target) % (2 * math.pi)
         d_T = torch.tensor(
             [d_theta.item(), math.sin(d_azimuth.item()), math.cos(d_azimuth.item()), 0]
         )
@@ -532,7 +534,6 @@ class LidcidriHardFBData(Dataset):
         except:
             print(path)
             sys.exit()
-        # img[img[:, :, -1] == 0.] = color
         img = Image.fromarray(np.uint8(img * 255.0))
         return img
 
@@ -548,18 +549,12 @@ class LidcidriHardFBData(Dataset):
         index_target = random.randint(1, total_view - 1)
         patient_path = os.path.join(self.root_dir, self.paths[index])
 
-        # print(self.paths[index])
-
-        # color = [1., 1., 1., 1.]
-
         target_im = self.process_im(
             self.load_im(os.path.join(patient_path, "%04d.png" % index_target))
         )
         cond_im = self.process_im(
             self.load_im(os.path.join(patient_path, "%04d.png" % index_cond))
         )
-        # target_RT = np.load(os.path.join(filename, '%03d.npy' % index_target))
-        # cond_RT = np.load(os.path.join(filename, '%03d.npy' % index_cond))
 
         data["image_target"] = target_im
         data["image_cond"] = cond_im

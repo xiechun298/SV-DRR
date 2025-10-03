@@ -31,12 +31,34 @@ Unlike DRR, which renders X-ray projections from a 3D CT volume, our method synt
 ![SV_DRR](SV_DRR.svg)
 <!-- <img src="SV_DRR.svg" alt="SV_DRR.svg" width="800"/> -->
 
+##  Dataset
+[Download the preprocessed DRRs](https://drive.google.com/drive/folders/17hl5JEplo1yznmM2GtdJzYGwwT0MiWqc?usp=drive_link) 
+
+We synthesized 3000 DRR images for each CT by uniformly sampling on a sphere, but only the first 1500 images (on the PA view side) were used for the experiment.
+The images are organized as follows:
+
+    image_complex_fb_256  
+        |-LIDC-IDRI-0001  
+            |-0000.png   <- 0000 is always the standard PA view  
+            |-0001.png          
+            |-...
+            |-2999.png 
+            |-camera.json
+        |-LIDC-IDRI-0002
+        |-...
+        |-camera_views.json  <- Polar coordinates of each view
+        |-patients.json  
+
+
 ##  Usage
+🚧 Code in Preparation 🚧
 
-Work in progress
+Thank you for your interest in this research! I am currently in the process of cleaning, documenting, and refactoring the code used in my paper.
 
-##  Training
-Work in progress
+My goal is to make it public and reproducible for the community. Please be aware that the code in its current state is a work-in-progress and is not yet ready for use.
+
+Please Star or Watch this repository to be notified of its official release. Thank you for your patience!
+
 
 ##  Acknowledgement
 This repository is based on the codebases below:

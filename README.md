@@ -51,6 +51,20 @@ The images are organized as follows:
 
 
 ##  Usage
+
+You can download the pretrained models by either:
+
+1. Running the provided script:
+    ```
+    python scripts/download_models.py
+    ```
+    This will download all models to `models/`
+2. Or manually downloading the models from Hugging Face:
+    - 256 resolution: https://huggingface.co/xiechun-tsukuba/svdrr-dit-fb-256
+    - 512 resolution: https://huggingface.co/xiechun-tsukuba/svdrr-dit-fb-512
+    - 1024 resolution: https://huggingface.co/xiechun-tsukuba/svdrr-dit-fb-1024
+
+
 🚧 Code in Preparation 🚧
 
 Thank you for your interest in this research! I am currently in the process of cleaning, documenting, and refactoring the code used in my paper.

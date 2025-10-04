@@ -11,16 +11,14 @@ University of Tsukuba | Tokyo Medical University Ibaraki Medical Center
 We propose a novel view-conditioned diffusion model for synthesizing
 multi-view X-ray images up to 1024x1024 resolution from a single view.
 
-<!-- ![Demo](demo2.gif) -->
-
 <p align="center">
-    <img src="demo2.gif" alt="demo2.gif" width="500"/>
+    <img src="assets/demo2.gif" alt="demo2.gif" width="500"/>
 </p>
 
 ## Visual Comparison with SOTA Methods
-![visulization](visulization.svg)
+![visulization](assets/visulization.svg)
 <!-- <p align="center">
-    <img src="visulization.svg" alt="visulization.svg" width="800"/>
+    <img src="assets/visulization.svg" alt="visulization.svg" width="800"/>
 </p> -->
 
 ## DRR vs. SV-DRR
@@ -28,8 +26,8 @@ The name SV-DRR, short for Single-View DRR, is inspired by Digitally Reconstruct
 
 Unlike DRR, which renders X-ray projections from a 3D CT volume, our method synthesizes novel views directly from a single 2D projection.
 
-![SV_DRR](SV_DRR.svg)
-<!-- <img src="SV_DRR.svg" alt="SV_DRR.svg" width="800"/> -->
+![SV_DRR](assets/SV_DRR.svg)
+<!-- <img src="assets/SV_DRR.svg" alt="SV_DRR.svg" width="800"/> -->
 
 ##  Dataset
 [Download the preprocessed DRRs](https://drive.google.com/drive/folders/17hl5JEplo1yznmM2GtdJzYGwwT0MiWqc?usp=drive_link) 

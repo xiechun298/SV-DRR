@@ -64,10 +64,36 @@ You can download the pretrained models by either:
     - 512 resolution: https://huggingface.co/xiechun-tsukuba/svdrr-dit-fb-512
     - 1024 resolution: https://huggingface.co/xiechun-tsukuba/svdrr-dit-fb-1024
 
+### Inference
+Perform inference on a single image:
+```
+# Default views (azimuth angles from -90° to 90° in 5° increments)
+python test_svdrr_DiT.py --model_path models/DiT-fb-512 \
+    --image_path demo/real_xray.jpg \
+    --log_dir outputs/ \
+    --image_size 512 \
+    --simple_pose
 
-🚧 Code in Preparation 🚧
+# User-specified views defined in camera_views.json
+python test_svdrr_DiT.py --model_path models/DiT-fb-512 \
+    --image_path demo/real_xray.jpg \
+    --log_dir outputs/ \
+    --image_size 512 \
+    --poses demo/camera_views.json
 
-Thank you for your interest in this research! I am currently in the process of cleaning, documenting, and refactoring the code used in my paper.
+```
+Perform inference on the LIDC-IDRI-DRR dataset:
+```
+python test_svdrr_DiT.py --model_path models/svdrr-DiT-fb-256 \
+--dataset path/to/dataset/ \
+--log_dir outputs/ \
+--image_size 256 
+```
+
+### Training
+🚧 Training Code in Preparation 🚧
+
+Thank you for your interest in this research! I am currently in the process of cleaning, documenting, and refactoring the training code used in my paper.
 
 My goal is to make it public and reproducible for the community. Please be aware that the code in its current state is a work-in-progress and is not yet ready for use.
 

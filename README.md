@@ -2,10 +2,14 @@
 MICCAI 2025
 
 [![arXiv](https://img.shields.io/badge/arXiv-2507.05148-b31b1b.svg)](https://arxiv.org/abs/2507.05148)
+[![Paper](https://img.shields.io/badge/Paper-Springer-blue.svg)](https://link.springer.com/chapter/10.1007/978-3-032-04965-0_54)
 
 **Authors:** Chun Xie, Yuichi Yoshii, Itaru Kitahara
 
 University of Tsukuba | Tokyo Medical University Ibaraki Medical Center
+
+## 📰 News
+- **[2025-10-05]** 🎉 Inference code and pretrained models are now available! You can now run SV-DRR on your own X-ray images.
 
 ## TL;DR
 We propose a novel view-conditioned diffusion model for synthesizing
@@ -112,6 +116,17 @@ This repository is based on the codebases below:
 If you find this work useful, a citation will be appreciated via:
 
 ```bibtex
+@InProceedings{XieChu_SVDRR_MICCAI2025,
+        author = { Xie, Chun AND Yoshii, Yuichi AND Kitahara, Itaru},
+        title = { { SV-DRR: High-Fidelity Novel View X-Ray Synthesis Using Diffusion Model } },
+        booktitle = {proceedings of Medical Image Computing and Computer Assisted Intervention -- MICCAI 2025},
+        year = {2025},
+        publisher = {Springer Nature Switzerland},
+        volume = {LNCS 15963},
+        month = {September},
+        page = {572 -- 582}
+}
+
 @misc{xie2025svdrr,
       title={SV-DRR: High-Fidelity Novel View X-Ray Synthesis Using Diffusion Model}, 
       author={Chun Xie and Yuichi Yoshii and Itaru Kitahara},

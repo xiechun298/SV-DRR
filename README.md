@@ -48,7 +48,7 @@ The images are organized as follows:
             |-camera.json
         |-LIDC-IDRI-0002
         |-...
-        |-camera_views.json  <- Polar coordinates of each view
+        |-camera_views.json  <- Spherical coordinates of each view, in radians
         |-patients.json  
 
 
@@ -60,7 +60,9 @@ You can download the pretrained models by either:
     ```
     python scripts/download_models.py
     ```
-    This will download all models to `models/`
+    This will download all models into the `models/` directory. 
+    
+    Shared components will be stored in the `shared/` folder, and symbolic links will be created in each model folder accordingly.
 2. Or manually downloading the models from Hugging Face:
     - 256 resolution: https://huggingface.co/xiechun-tsukuba/svdrr-dit-fb-256
     - 512 resolution: https://huggingface.co/xiechun-tsukuba/svdrr-dit-fb-512

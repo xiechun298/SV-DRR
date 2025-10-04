@@ -461,7 +461,7 @@ class SvdrrDiTPipeline(DiffusionPipeline):
             if isinstance(pose[0], list):
                 pose = torch.Tensor(pose)
             else:
-                pose = torch.Tensor([pose])
+                pose = torch.Tensor(np.array([pose]))
             x, y, z = (
                 pose[:, 0].unsqueeze(dim=1),
                 pose[:, 1].unsqueeze(1),

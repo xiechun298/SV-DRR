@@ -12,15 +12,20 @@ import numpy as np
 
 
 def main(
-    model_path, image_path, log_dir, dataset, image_size, simple_pose, split, flip_pose
+    model_path,
+    image_path,
+    log_dir,
+    dataset,
+    image_size,
+    simple_pose,
+    split,
+    flip_pose,
+    poses,
 ):
     # Constants
     STEP = 5
     GUIDANCE_SCALE = 3.0
     NUM_INFERENCE_STEPS = 30
-
-    # Initialize Accelerator
-    accelerator = Accelerator()
 
     # Load Pipeline
     pipe = SvdrrDiTPipeline.from_pretrained(model_path, torch_dtype=torch.float16)
@@ -31,24 +36,44 @@ def main(
     pipe = pipe.to("cuda")
 
     # Image transformations
-    image_transforms = transforms.Compose(
-        [
-            transforms.Resize((265, 256)),  # 256, 256
-            transforms.ToTensor(),
-            transforms.Normalize([0.5], [0.5]),
-        ]
-    )
+    # image_transforms = transforms.Compose(
+    #     [
+    #         transforms.Resize((265, 256)),  # 256, 256
+    #         transforms.ToTensor(),
+    #         transforms.Normalize([0.5], [0.5]),
+    #     ]
+    # )
 
     os.makedirs(log_dir, exist_ok=True)
 
     # Query poses
+    query_poses = []
+    pose_ids = []
 
-    query_poses = [[0, i, 0] for i in range(-90, 91, STEP) if i != 0]
+    if image_path and not poses:
+        print("No poses file provided for single image, using simple poses.")
+        simple_pose = True
+
+    if simple_pose:
+        print("Using simple pose")
+        query_poses = [[0, i, 0] for i in range(-90, 91, STEP) if i != 0]
+        pose_ids = [i for i in range(-90, 91, STEP) if i != 0]
+    elif poses:
+        print("Using poses from file")
+        with open(poses, "r") as f:
+            camera_views = json.load(f)
+        # attach [0.0] to each coordinate as d_radius (always 0 in our case)
+        query_poses = [
+            np.rad2deg(camera_view["coordinate"] + [0.0])
+            for camera_view in camera_views
+        ]
+        pose_ids = [camera_view["id"] for camera_view in camera_views]
 
     # Load and preprocess input image or dataset
     if dataset:
         # Load camera_views.json and patients.json
-        if not simple_pose:
+        if not simple_pose and not poses:
+            print("Using poses from dataset camera_views.json")
             with open(os.path.join(dataset, "camera_views.json"), "r") as f:
                 camera_views = json.load(f)
                 camera_views = [
@@ -56,6 +81,7 @@ def main(
                     for view in camera_views
                     if view["orientation"] == "PA" and view["id"] != "0000"
                 ]
+            # attach [0.0] to each coordinate as d_radius (always 0 in our case)
             query_poses = [
                 np.rad2deg(camera_view["coordinate"] + [0.0])
                 for camera_view in camera_views
@@ -85,7 +111,7 @@ def main(
         image_paths = [
             os.path.join(dataset, patient, "0000.png") for patient in patients
         ]
-    else:
+    else:  # image_path
         image_paths = [image_path]
 
     for idx, image_path in enumerate(image_paths):
@@ -94,17 +120,24 @@ def main(
         input_image = load_image(image_path)
         input_image = input_image.resize((image_size, image_size)).convert("L")
         # Save original image
+        out_dir = log_dir
         if dataset:
-            os.makedirs(os.path.join(log_dir, patients[idx]), exist_ok=True)
+            out_dir = os.path.join(log_dir, patients[idx])
+            os.makedirs(out_dir, exist_ok=True)
             file_name = "0000.png" if not simple_pose else "0.png"
-            input_image.save(os.path.join(log_dir, patients[idx], file_name))
+            input_image.save(os.path.join(out_dir, file_name))
         else:
-            input_image.save(os.path.join(log_dir, f"{idx}_0.png"))
+            file_name = os.path.basename(image_path)
+            folder_name = os.path.splitext(file_name)[0]
+            out_dir = os.path.join(log_dir, folder_name)
+            # get file name of image_path without extension
+            os.makedirs(out_dir, exist_ok=True)
+            input_image.save(os.path.join(out_dir, file_name))
 
         # Generate images
         with torch.no_grad():
-            # 一个补丁， 用来补救训练时颠倒了condition和target的顺序的问题
-            if flip_pose:
+            if not flip_pose:
+                # align with training, where pose is condition - target
                 query_poses = np.array([0, 0, 0]) - query_poses
             for pose_idx, query_pose in enumerate(query_poses):
                 with torch.autocast("cuda"):
@@ -119,21 +152,13 @@ def main(
                         num_inference_steps=NUM_INFERENCE_STEPS,
                     )
                     out_image = result.images[0]
-                if dataset:
-                    file_name = (
-                        f"{pose_ids[pose_idx]}.png"
-                        if not simple_pose
-                        else f"{query_pose[1]}.png"
+                file_name = f"{pose_ids[pose_idx]}.png"
+                out_image.save(
+                    os.path.join(
+                        out_dir,
+                        file_name,
                     )
-                    out_image.save(
-                        os.path.join(
-                            log_dir,
-                            patients[idx],
-                            file_name,
-                        )
-                    )
-                else:
-                    out_image.save(os.path.join(log_dir, f"{idx}_{query_pose[1]}.png"))
+                )
 
     print("Done!")
 
@@ -143,11 +168,20 @@ if __name__ == "__main__":
     parser.add_argument(
         "--model_path", type=str, required=True, help="Path to the model"
     )
-    parser.add_argument("--image_path", type=str, help="Path to the input image")
+
+    # Create mutually exclusive group for image_path and dataset
+    input_group = parser.add_mutually_exclusive_group(required=True)
+    input_group.add_argument("--image_path", type=str, help="Path to the input image")
+    input_group.add_argument("--dataset", type=str, help="Path to the dataset")
+
     parser.add_argument(
         "--log_dir", type=str, required=True, help="Directory to save the output images"
     )
-    parser.add_argument("--dataset", type=str, help="Path to the dataset")
+    parser.add_argument(
+        "--poses",
+        type=str,
+        help="Path to poses file (like camera_views.json) for image_path mode",
+    )
     parser.add_argument(
         "--image_size", type=int, default=256, help="Size of the output images"
     )
@@ -155,15 +189,15 @@ if __name__ == "__main__":
         "--simple_pose", action="store_true", help="Use simple pose [-90 ~ 90]"
     )
     parser.add_argument(
-        "--flip_pose", action="store_true", help="Flip the pose by multiplying -1"
+        "--flip_pose",
+        action="store_true",
+        help="Flip the pose by multiplying -1, convert to target - condition",
     )
     parser.add_argument(
         "--split", type=str, required=False, default="val", help="train or val"
     )
-    args = parser.parse_args()
 
-    if not args.image_path and not args.dataset:
-        parser.error("At least one of --image_path or --dataset must be provided.")
+    args = parser.parse_args()
 
     main(
         args.model_path,
@@ -174,4 +208,5 @@ if __name__ == "__main__":
         args.simple_pose,
         args.split,
         flip_pose=args.flip_pose,
+        poses=args.poses,
     )

@@ -65,6 +65,7 @@ You can download the pretrained models by either:
     - 1024 resolution: https://huggingface.co/xiechun-tsukuba/svdrr-dit-fb-1024
 
 ### Inference
+<<<<<<< HEAD
 Note: The coordinate system of LIDC-IDRI-DRR is opposite to the intuitive one — the polar angle increases downward, and the azimuth angle increases when rotating to the left.
 To invert the pose coordinate system, use the `--flip_pose` option.
 

@@ -1,12 +1,20 @@
 # SV-DRR: High-Fidelity Novel View X-Ray Synthesis Using Diffusion Model
-MICCAI 2025
 
-[![arXiv](https://img.shields.io/badge/arXiv-2507.05148-b31b1b.svg)](https://arxiv.org/abs/2507.05148)
-[![Paper](https://img.shields.io/badge/Paper-Springer-blue.svg)](https://link.springer.com/chapter/10.1007/978-3-032-04965-0_54)
+<p align="center">
+    <strong>MICCAI 2025</strong><br>
+    <img src="https://conferences.miccai.org/2025/files/images/layout/en/miccai2025-mobile-logo.png" alt="MICCAI 2025" height="80">
+</p>
 
-**Authors:** Chun Xie, Yuichi Yoshii, Itaru Kitahara
+<p align="center">
+    <a href="https://arxiv.org/abs/2507.05148"><img src="https://img.shields.io/badge/arXiv-2507.05148-b31b1b.svg" alt="arXiv"></a>
+    <a href="https://link.springer.com/chapter/10.1007/978-3-032-04965-0_54"><img src="https://img.shields.io/badge/Paper-Springer-blue.svg" alt="Paper"></a>
+    <a href="https://www.canva.com/design/DAGydwPkSrA/JC3gkD94as9UqvY0pHE1XQ/view?utm_content=DAGydwPkSrA&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h3d57eedde3"><img src="https://img.shields.io/badge/Poster-View-green.svg" alt="Poster"></a>
+</p>
 
-University of Tsukuba | Tokyo Medical University Ibaraki Medical Center
+<p align="center">
+    <strong>Authors:</strong> Chun Xie, Yuichi Yoshii, Itaru Kitahara<br>
+    <em>University of Tsukuba | Tokyo Medical University Ibaraki Medical Center</em>
+</p>
 
 ## 📰 News
 - **[2025-10-05]** 🎉 Inference code and pretrained models are now available! You can now run SV-DRR on your own X-ray images.

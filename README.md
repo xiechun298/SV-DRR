@@ -73,7 +73,7 @@ Note: The coordinate system of LIDC-IDRI-DRR is opposite to the intuitive one �
 To invert the pose coordinate system, use the `--flip_pose` option.
 
 Perform inference on a single image:
-```
+```bash
 # Default views (azimuth angles from -90° to 90° in 5° increments)
 python test_svdrr_DiT.py --model_path models/DiT-fb-512 \
     --image_path demo/real_xray.jpg \
@@ -90,14 +90,85 @@ python test_svdrr_DiT.py --model_path models/DiT-fb-512 \
 
 ```
 Perform inference on the LIDC-IDRI-DRR dataset:
-```
+```bash
 python test_svdrr_DiT.py --model_path models/svdrr-DiT-fb-256 \
---dataset path/to/dataset/ \
---log_dir outputs/ \
---image_size 256 
+    --dataset {path/to/dataset/} \
+    --log_dir outputs/ \
+    --image_size 256 
 ```
 
 ### Training
+
+#### 1. Prepare Base Model
+
+First, download the base model pretrained by PixArt-Σ:
+
+```bash
+# For 256x256 resolution (default)
+python scripts/download_base_model.py
+
+# For 512x512 resolution
+python scripts/download_base_model.py --size 512
+
+# For 1024x1024 resolution
+python scripts/download_base_model.py --size 1024
+```
+
+This will download the appropriate PixArt-Σ pretrained weights to `models/base-model/` and prepare them for SV-DRR training.
+
+#### 2. Training Script
+To train from the base model at 256×256 resolution, run:
+```bash
+accelerate launch train_svdrr_DiT.py \
+    --pretrained_model_name_or_path "models/base_model/256" \
+    --resolution 256 \
+    --train_batch_size 64 \
+    --lr_warmup_steps 1000 \
+    --learning_rate 5e-6 \
+    --train_data_dir "{path/to/256/dataset/}" \
+    --output_dir "checkpoints/svdrr-DiT-fb-256" \
+    --tracker_project_name "svdrr-DiT-fb-256" \
+    --dataloader_num_workers 16 \
+    --checkpointing_steps 1000 \
+    --validation_steps 1000 \
+    --num_validation_batches 8 \
+    --checkpoints_total_limit 20 \
+    --max_train_steps 200000 \
+    --ct_thickness "thin" \
+    --xray_orientation "PA" \
+    --device_specific_seed \
+    --use_seedable_sampler 
+```
+To resume training from a checkpoint, use:
+`--resume_from_checkpoint {checkpoint}`
+Here, `{checkpoint}` can be the path to a specific checkpoint file or simply "latest"
+
+After reaching the maximum training steps, the ready-to-use inference pipeline will be automatically saved to the `final-pipeline/` folder under the specified `output_dir`.
+
+To continus train at higher resolution, run:
+```bash
+accelerate launch train_zero1to3_DiT.py \
+    --pretrained_model_name_or_path "{path/to/256/model}" \
+    --resolution 512 \
+    --train_batch_size 32 \
+    --lr_warmup_steps 1000 \
+    --learning_rate 3e-6 \
+    --train_data_dir "{path/to/512/dataset/}" \
+    --output_dir "checkpoints/DiT-hard-p256-p512-bs32" \
+    --tracker_project_name "svdrr-DiT-fb-256-512" \
+    --dataloader_num_workers 16 \
+    --checkpointing_steps 1000 \
+    --validation_steps 1000 \
+    --num_validation_batches 8 \
+    --checkpoints_total_limit 20 \
+    --max_train_steps 100000 \
+    --ct_thickness "thin" \
+    --xray_orientation "PA" \
+    --device_specific_seed \
+    --use_seedable_sampler \
+```
+
+
 🚧 Training Code in Preparation 🚧
 
 Thank you for your interest in this research! I am currently in the process of cleaning, documenting, and refactoring the training code used in my paper.
@@ -126,16 +197,17 @@ If you find this work useful, a citation will be appreciated via:
         publisher = {Springer Nature Switzerland},
         volume = {LNCS 15963},
         month = {September},
-        page = {572 -- 582}
+        page = {572 -- 582},
+        doi = {https://doi.org/10.1007/978-3-032-04965-0_54}
 }
 
 @misc{xie2025svdrr,
-      title={SV-DRR: High-Fidelity Novel View X-Ray Synthesis Using Diffusion Model}, 
-      author={Chun Xie and Yuichi Yoshii and Itaru Kitahara},
-      year={2025},
-      eprint={2507.05148},
-      archivePrefix={arXiv},
-      doi={https://doi.org/10.48550/arXiv.2507.05148}, 
+        title = {SV-DRR: High-Fidelity Novel View X-Ray Synthesis Using Diffusion Model}, 
+        author = {Chun Xie and Yuichi Yoshii and Itaru Kitahara},
+        year = {2025},
+        eprint = {2507.05148},
+        archivePrefix = {arXiv},
+        doi = {https://doi.org/10.48550/arXiv.2507.05148}, 
 } 
 ```
 

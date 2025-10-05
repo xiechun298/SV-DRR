@@ -154,7 +154,7 @@ accelerate launch train_zero1to3_DiT.py \
     --lr_warmup_steps 1000 \
     --learning_rate 3e-6 \
     --train_data_dir "{path/to/512/dataset/}" \
-    --output_dir "checkpoints/DiT-hard-p256-p512-bs32" \
+    --output_dir "checkpoints/svdrr-DiT-fb-256-512" \
     --tracker_project_name "svdrr-DiT-fb-256-512" \
     --dataloader_num_workers 16 \
     --checkpointing_steps 1000 \

@@ -62,42 +62,50 @@ The images are organized as follows:
 
 ##  Usage
 
+### 🚀 Quick Start
+
+#### Download Pretrained Models
+
 You can download the pretrained models by either:
 
-1. Running the provided script:
-    ```
-    python scripts/download_models.py
-    ```
-    This will download all models into the `models/` directory. 
-    
-    Shared components will be stored in the `shared/` folder, and symbolic links will be created in each model folder accordingly.
-2. Or manually downloading the models from Hugging Face:
-    - 256 resolution: https://huggingface.co/xiechun-tsukuba/svdrr-dit-fb-256
-    - 512 resolution: https://huggingface.co/xiechun-tsukuba/svdrr-dit-fb-512
-    - 1024 resolution: https://huggingface.co/xiechun-tsukuba/svdrr-dit-fb-1024
-
-### Inference
-Note: The coordinate system of LIDC-IDRI-DRR is opposite to the intuitive one — the polar angle increases downward, and the azimuth angle increases when rotating to the left.
-To invert the pose coordinate system, use the `--flip_pose` option.
-
-Perform inference on a single image:
+**Option 1: Automated Download (Recommended)**
 ```bash
-# Default views (azimuth angles from -90° to 90° in 5° increments)
+python scripts/download_models.py
+```
+This will download all models into the `models/` directory. Shared components will be stored in the `shared/` folder, and symbolic links will be created in each model folder accordingly.
+
+**Option 2: Manual Download from Hugging Face**
+- 256 resolution: https://huggingface.co/xiechun-tsukuba/svdrr-dit-fb-256
+- 512 resolution: https://huggingface.co/xiechun-tsukuba/svdrr-dit-fb-512
+- 1024 resolution: https://huggingface.co/xiechun-tsukuba/svdrr-dit-fb-1024
+
+### 🔍 Inference
+
+**Important Note:** The coordinate system of LIDC-IDRI-DRR is opposite to the intuitive one — the polar angle increases downward, and the azimuth angle increases when rotating to the left. To invert the pose coordinate system, use the `--flip_pose` option.
+
+#### Single Image Inference
+
+**Default views (azimuth angles from -90° to 90° in 5° increments):**
+```bash
 python test_svdrr_DiT.py --model_path models/DiT-fb-512 \
     --image_path demo/real_xray.jpg \
     --log_dir outputs/ \
     --image_size 512 \
     --simple_pose
+```
 
-# User-specified views defined in camera_views.json
+**User-specified views defined in camera_views.json:**
+```bash
 python test_svdrr_DiT.py --model_path models/DiT-fb-512 \
     --image_path demo/real_xray.jpg \
     --log_dir outputs/ \
     --image_size 512 \
     --poses demo/camera_views.json
-
 ```
-Perform inference on the LIDC-IDRI-DRR dataset:
+
+#### Dataset Inference
+
+**Perform inference on the LIDC-IDRI-DRR dataset:**
 ```bash
 python test_svdrr_DiT.py --model_path models/svdrr-DiT-fb-256 \
     --dataset {path/to/dataset/} \
@@ -105,9 +113,9 @@ python test_svdrr_DiT.py --model_path models/svdrr-DiT-fb-256 \
     --image_size 256 
 ```
 
-### Training
+### 🏋️ Training
 
-#### 1. Prepare Base Model
+#### Step 1: Prepare Base Model
 
 First, download the base model pretrained by PixArt-Σ:
 
@@ -124,8 +132,10 @@ python scripts/download_base_model.py --size 1024
 
 This will download the appropriate PixArt-Σ pretrained weights to `models/base-model/` and prepare them for SV-DRR training.
 
-#### 2. Training Script
-To train from the base model at 256×256 resolution, run:
+#### Step 2: Training from Scratch (256×256)
+
+To train from the base model at 256×256 resolution:
+
 ```bash
 accelerate launch train_svdrr_DiT.py \
     --pretrained_model_name_or_path "models/base_model/256" \
@@ -147,13 +157,17 @@ accelerate launch train_svdrr_DiT.py \
     --device_specific_seed \
     --use_seedable_sampler 
 ```
-To resume training from a checkpoint, use:
-`--resume_from_checkpoint {checkpoint}`
-Here, `{checkpoint}` can be the path to a specific checkpoint file or simply "latest"
+
+**Resume Training:**
+To resume training from a checkpoint, use: `--resume_from_checkpoint {checkpoint}`
+Here, `{checkpoint}` can be the path to a specific checkpoint file or simply "latest".
 
 After reaching the maximum training steps, the ready-to-use inference pipeline will be automatically saved to the `final-pipeline/` folder under the specified `output_dir`.
 
-To continue training at 512x512 resolution, run:
+#### Step 3: Continue Training at Higher Resolution (512×512)
+
+To continue training at 512×512 resolution:
+
 ```bash
 accelerate launch train_zero1to3_DiT.py \
     --pretrained_model_name_or_path "{path/to/256/model}" \

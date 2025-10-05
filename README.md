@@ -145,7 +145,7 @@ Here, `{checkpoint}` can be the path to a specific checkpoint file or simply "la
 
 After reaching the maximum training steps, the ready-to-use inference pipeline will be automatically saved to the `final-pipeline/` folder under the specified `output_dir`.
 
-To continus train at higher resolution, run:
+To continue training at 512x512 resolution, run:
 ```bash
 accelerate launch train_zero1to3_DiT.py \
     --pretrained_model_name_or_path "{path/to/256/model}" \

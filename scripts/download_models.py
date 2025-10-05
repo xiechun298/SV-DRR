@@ -2,7 +2,7 @@ import os
 from huggingface_hub import snapshot_download, list_repo_files
 
 # Define base directory for models
-MODELS_DIR = "models_hf"
+MODELS_DIR = "models"
 
 # Define shared and unique components
 shared_components = ["vae", "scheduler", "image_encoder"]

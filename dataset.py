@@ -344,8 +344,6 @@ class LidcidriData(Dataset):
         index_target = random.choice(self.target_list)
         patient_path = os.path.join(self.root_dir, self.paths[index])
 
-        # print(self.paths[index])
-
         # color = [1., 1., 1., 1.]
 
         target_im = self.process_im(
@@ -360,7 +358,7 @@ class LidcidriData(Dataset):
         data["image_target"] = target_im
         data["image_cond"] = cond_im
         # data["T"] = self.get_T(target_RT, cond_RT)
-        d_azimuth = np.deg2rad((index_target - index_cond) % 360)
+        d_azimuth = np.deg2rad((index_cond - index_target) % 360)
         data["T"] = torch.tensor(
             [0, math.sin(d_azimuth.item()), math.cos(d_azimuth.item()), 0]
         )
@@ -428,7 +426,6 @@ class LidcidriHardFBData(Dataset):
         CT_thickness="all",  # "all" or "thin" or "thick"
         orientation="all",  # "all" or "PA" or "AP"
         validation=False,
-        debug=True,
     ) -> None:
         """Create a dataset from a folder of images.
         If you pass in a root directory it will be searched for images
@@ -436,8 +433,6 @@ class LidcidriHardFBData(Dataset):
         """
         self.root_dir = root_dir
         self.total_view = total_view if orientation == "all" else total_view / 2
-        if debug:
-            self.total_view = 2
 
         if os.path.exists(os.path.join(self.root_dir, "patients.json")):
             with open(os.path.join(self.root_dir, "patients.json")) as f:
@@ -471,13 +466,25 @@ class LidcidriHardFBData(Dataset):
 
         total_objects = len(self.paths)
         if validation:
-            self.paths = self.paths[
-                math.floor(total_objects / 100.0 * 99.0) :
-            ]  # used last 1% as validation
+            # used last 1% as validation
+            # self.paths = self.paths[math.floor(total_objects / 100.0 * 99.0) :]
+
+            # use the last 16 objects as validation
+            self.paths = self.paths[-16:]
+            print(
+                "============= length of validation dataset %d ============="
+                % len(self.paths)
+            )
         else:
-            self.paths = self.paths[
-                : math.floor(total_objects / 100.0 * 99.0)
-            ]  # used first 99% as training
+            # used first 99% as training
+            # self.paths = self.paths[: math.floor(total_objects / 100.0 * 99.0)]
+
+            # use all except the last 16 objects as training
+            self.paths = self.paths[:-16]
+            print(
+                "============= length of training dataset %d ============="
+                % len(self.paths)
+            )
         self.tform = image_transforms
 
     def __len__(self):
@@ -517,12 +524,7 @@ class LidcidriHardFBData(Dataset):
         d_T = torch.tensor(
             [d_theta.item(), math.sin(d_azimuth.item()), math.cos(d_azimuth.item()), 0]
         )
-        print("cond_theta_phi: ", cond_theta_phi)
-        print("target_theta_phi: ", target_theta_phi)
-        print("d_T: ", d_T)
-        print("azimuth_target", azimuth_target)
-        print("azimuth_cond", azimuth_cond)
-        print("d_azimuth", d_azimuth)
+
         return d_T
 
     def load_im(self, path):

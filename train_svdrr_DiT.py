@@ -1445,6 +1445,7 @@ def main(args):
             safety_checker=None,
             torch_dtype=torch.float32,
         )
+        print(f"Saving pipeline to {os.path.join(args.output_dir, 'final-pipeline')}")
         pipeline.save_pretrained(os.path.join(args.output_dir, "final-pipeline"))
 
         if args.push_to_hub:

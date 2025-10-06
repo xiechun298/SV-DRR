@@ -170,7 +170,7 @@ To continue training at 512×512 resolution:
 
 ```bash
 accelerate launch train_zero1to3_DiT.py \
-    --pretrained_model_name_or_path "{path/to/256/model}" \
+    --pretrained_model_name_or_path "{path/to/svdrr_model/256}" \
     --resolution 512 \
     --train_batch_size 32 \
     --lr_warmup_steps 1000 \
@@ -189,15 +189,40 @@ accelerate launch train_zero1to3_DiT.py \
     --device_specific_seed \
     --use_seedable_sampler \
 ```
+<details>
+<summary>Similarly, to continue training at 1024×1024 resolution:</summary>
+
+```bash
+accelerate launch train_svdrr_DiT.py \
+    --pretrained_model_name_or_path "{path/to/svdrr_model/512}" \
+    --resolution 1024 \
+    --train_batch_size 8 \
+    --lr_warmup_steps 1000 \
+    --learning_rate 1e-6 \
+    --train_data_dir "{path/to/1024/dataset/}" \
+    --output_dir "checkpoints/svdrr-DiT-fb-256-512-1024" \
+    --tracker_project_name "svdrr-DiT-fb-256-512-1024" \
+    --dataloader_num_workers 16 \
+    --checkpointing_steps 1000 \
+    --validation_steps 1000 \
+    --num_validation_batches 8 \
+    --checkpoints_total_limit 20 \
+    --max_train_steps 100000 \
+    --ct_thickness "thin" \
+    --xray_orientation "PA" \
+    --device_specific_seed \
+    --use_seedable_sampler \
+```
+</details>
 
 
-🚧 Training Code in Preparation 🚧
+<!-- 🚧 Training Code in Preparation 🚧
 
 Thank you for your interest in this research! I am currently in the process of cleaning, documenting, and refactoring the training code used in my paper.
 
 My goal is to make it public and reproducible for the community. Please be aware that the code in its current state is a work-in-progress and is not yet ready for use.
 
-Please Star or Watch this repository to be notified of its official release. Thank you for your patience!
+Please Star or Watch this repository to be notified of its official release. Thank you for your patience! -->
 
 
 ##  Acknowledgement

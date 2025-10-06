@@ -1,5 +1,4 @@
-# A diffuser version implementation of Zero1to3 (https://github.com/cvlab-columbia/zero123), ICCV 2023
-# by Xin Kong
+# Derived from zero123-hf, a huggingface implementation of Zero123.
 
 import inspect
 from typing import Any, Callable, Dict, List, Optional, Union

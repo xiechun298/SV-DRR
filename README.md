@@ -65,7 +65,22 @@ The images are organized as follows:
 
 ### 🚀 Quick Start
 
-#### Download Pretrained Models
+#### 🛠️ Environment Setup
+
+To ensure compatibility and reproducibility, follow these steps to set up the environment:
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/xiechun-tsukuba/svdrr.git
+   cd svdrr
+   ```
+
+2. **Create a Python Virtual Environment**:
+   ```bash
+   conda create -f environment.yaml
+   ```
+
+#### ⏬ Download Pretrained Models
 
 You can download the pretrained models by either:
 
@@ -144,7 +159,7 @@ accelerate launch train_svdrr_DiT.py \
     --train_batch_size 64 \
     --lr_warmup_steps 1000 \
     --learning_rate 5e-6 \
-    --train_data_dir "{path/to/256/dataset/}" \
+    --train_data_dir {path/to/256/dataset/} \
     --output_dir "checkpoints/svdrr-DiT-fb-256" \
     --tracker_project_name "svdrr-DiT-fb-256" \
     --dataloader_num_workers 16 \
@@ -270,4 +285,6 @@ If you find this work useful, a citation will be appreciated via:
         doi = {https://doi.org/10.48550/arXiv.2507.05148}, 
 } 
 ```
+
+
 

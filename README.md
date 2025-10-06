@@ -158,11 +158,23 @@ accelerate launch train_svdrr_DiT.py \
     --use_seedable_sampler 
 ```
 
+After reaching the maximum training steps, the ready-to-use inference pipeline will be automatically saved to the `final-pipeline/` folder under the specified `output_dir`.
+
 **Resume Training:**
 To resume training from a checkpoint, use: `--resume_from_checkpoint {checkpoint}`
 Here, `{checkpoint}` can be the path to a specific checkpoint file or simply "latest".
 
-After reaching the maximum training steps, the ready-to-use inference pipeline will be automatically saved to the `final-pipeline/` folder under the specified `output_dir`.
+**Convert checnkpoint to pipeline:**
+To convert an intermediate checkpoint into a ready-to-use pipeline, run:
+```bash
+python script/ckpt2model_DiT.py \
+    --base_model {path/to/base_model} \
+    --ckpt {path/to/checkpoint} \
+    --size {256|512|1024} \
+    --output {path/to/output}
+```
+Here, `--base_model` can be any base model downloaded in Step 1, or a previously trained SV-DRR pipeline.
+
 
 #### Step 3: Continue Training at Higher Resolution (512×512)
 

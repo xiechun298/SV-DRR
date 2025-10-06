@@ -960,17 +960,8 @@ class GaussianDiffusion:
             if self.loss_type == LossType.RESCALED_KL:
                 terms["loss"] *= self.num_timesteps
         elif self.loss_type == LossType.MSE or self.loss_type == LossType.RESCALED_MSE:
-            # zero123, to be moved to the transformer model
-            if img_cond is not None:
-                raise NotImplementedError("img_cond will be removed")
-                assert img_cond.shape[2:] == x_t.shape[2:]
-                assert img_cond.shape[0] == x_t.shape[0]
-                latent_model_input = th.cat([x_t, img_cond], dim=1)  # # [B,4+4,32,32]
-                output = model(
-                    latent_model_input, timestep=t, **model_kwargs, return_dict=False
-                )[0]
-            else:
-                output = model(x_t, timestep=t, **model_kwargs, return_dict=False)[0]
+
+            output = model(x_t, timestep=t, **model_kwargs, return_dict=False)[0]
 
             if self.return_startx and self.model_mean_type == ModelMeanType.EPSILON:
                 B, C = x_t.shape[:2]

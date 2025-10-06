@@ -17,6 +17,7 @@
 </p>
 
 ## 📰 News
+- **[2025-10-06]** 🔥 Training instructions and code are now available! 
 - **[2025-10-05]** 🎉 Inference code and pretrained models are now available! You can now run SV-DRR on your own X-ray images.
 
 ## TL;DR

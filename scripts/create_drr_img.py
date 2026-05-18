@@ -14,6 +14,10 @@ from accelerate.utils.tqdm import tqdm
 
 import logging
 
+DEFAULT_SIZE = 512
+DEFAULT_DELX = 0.7
+DEFAULT_SSD = 1800.0
+
 logging.basicConfig(
     level=logging.INFO,
     filename="create_drr_img.log",
@@ -81,7 +85,16 @@ def get_first_nii_file_in_dir(directory):
         return None
 
 
-def main(data_root, img_dir, start=0, end=None):
+def main(args):
+    data_root = args.data_root
+    img_dir = args.img_dir
+    start = args.start
+    end = args.end
+    img_size = args.img_size
+    delx = args.delx
+    ssd = args.ssd
+    check_integrity = args.check_integrity
+
     # log start of the script with timestamp
     logging.info(f"Start of script: {datetime.datetime.now()}")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -136,10 +149,9 @@ def main(data_root, img_dir, start=0, end=None):
                 # Create DRR
                 drr = DRR(
                     ct_volume,  # An object storing the CT volume, origin, and voxel spacing
-                    sdd=1800.0,  # Source-to-detector distance (i.e., focal length)
-                    height=512
-                    * 2,  # Image height (if width is not provided, the generated DRR is square)
-                    delx=0.7 / 2,  # Pixel spacing (in mm)
+                    sdd=ssd,  # Source-to-detector distance (i.e., focal length)
+                    height=img_size,  # Image height (if width is not provided, the generated DRR is square)
+                    delx=delx,  # Pixel spacing (in mm)
                     # patch_size=1024,  # Patch size for rendering (in pixels)
                     renderer="trilinear",
                     # reverse_x_axis= False
@@ -207,7 +219,7 @@ def main(data_root, img_dir, start=0, end=None):
             #     img_path = os.path.join(data_root, patient_id, f"drr_{vid}.png")
             #     plt.imsave(img_path, img.squeeze().cpu().detach(), cmap='gray')
 
-    if accelerator.is_main_process:
+    if check_integrity and accelerator.is_main_process:
         check_data_integrity(
             img_dir,
             valid_patient_ids,
@@ -224,13 +236,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "--data_root",
         type=str,
-        default="/work/XRAYDIFF/xiechun/data/lidcidri/table_removed/",
+        default="data/lidcidri/table_removed/niis",
         help="Path to the data root",
     )
     parser.add_argument(
         "--img_dir",
         type=str,
-        default="img_complex_fb_1024",
+        default="imgs",
         help="Path to the output directory",
     )
     parser.add_argument(
@@ -245,7 +257,30 @@ if __name__ == "__main__":
         default=None,
         help="End patient id",
     )
+    parser.add_argument(
+        "--check_integrity",
+        action="store_true",
+        help="Whether to check data integrity after processing",
+    )
+    parser.add_argument(
+        "--img_size",
+        type=int,
+        default=DEFAULT_SIZE,
+        help="Size of the output DRR images",
+    )
+    parser.add_argument(
+        "--delx",
+        type=float,
+        default=DEFAULT_DELX,
+        help="Pixel spacing (in mm) of the output DRR images",
+    )
+    parser.add_argument(
+        "--ssd",
+        type=float,
+        default=DEFAULT_SSD,
+        help="Source-to-detector distance (in mm) of the output DRR images",
+    )
 
     args = parser.parse_args()
 
-    main(args.data_root, args.img_dir, args.start, args.end)
+    main(args)
